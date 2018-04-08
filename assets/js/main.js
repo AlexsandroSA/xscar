@@ -1,13 +1,14 @@
 
-(function( win, DOM ) {
+(function( win, $ ) {
   'use strict';
 
   // Variables
   var ajax = new XMLHttpRequest();
 
   var Element = {
-    FORM: DOM('[data-form="add-car"]'),
-    WRAPPER_LIST_CARD: DOM('[data-wrapper-list="cars"]').get()
+    FORM: $('[data-form="add-car"]'),
+    BUTTON_REMOVE_CAR: $('[data-action="remove-car"]'),
+    WRAPPER_LIST_CARD: $('[data-wrapper-list="cars"]').get()
   };
 
   var Data = {
@@ -16,8 +17,16 @@
 
   // Events
   Element.FORM.on('submit', addCar);
+  Element.BUTTON_REMOVE_CAR.on('click', removeCar);
 
   // Methods
+  function removeCar( event ) {
+    var $button = event.target;
+    var $row = $.getParent( $button ,'tr' );
+
+    $row.remove();
+  }
+
   function addCar( event ) {
     event.preventDefault();
     var $form = event.target;
@@ -63,6 +72,7 @@
       $template += '<td> ' + data.year + ' </td>';
       $template += '<td> ' + data.plate + ' </td>';
       $template += '<td> ' + data.color + ' </td>';
+      $template += '<td> <button data-action="remove-car">Remover</button> </td>';
     $template += '</tr>';
     return $template;
   }
@@ -81,7 +91,7 @@
   }
 
   function showCompany( prop ) {
-    var $company = DOM('[data-company="' + prop + '"]');
+    var $company = $('[data-company="' + prop + '"]');
     $company.forEach(function($item) {
       $item.textContent = Data.company[prop];
     });
