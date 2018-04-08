@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>XSCar - Loja de carros</title>
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/main.css">
+</head>
+<body>
+    <div class="app">
+        <header class="app-header">
+            <h1 class="app-brand" data-company="name"></h1>
+            <p> Phone: <span data-company="phone"></span> </p>
+        </header>
+
+        <main class="app-content">
+            <form class="form" data-form="add-car">
+                <div>
+                    <label for="">Imagem do carro(url)</label>
+                    <input type="url" name="url-image" placeholder="" required data-input="image">
+                    </div>
+                <div>
+                    <label for="">Marca/Modelo</label>
+                    <input type="text" name="brand" placeholder="" required data-input="brand">
+                    </div>
+                <div>
+                    <label for="">Ano</label>
+                    <input type="text" name="year" required data-input="year">
+                </div>
+                <div>
+                    <label for="">Placa</label>
+                    <input type="text" name="plate" required data-input="plate">
+                </div>
+                <div>
+                    <label for="">Cor</label>
+                    <input type="text" name="color" required data-input="color">
+                </div>
+                <button class="btn" type="submit" name="button">Cadastrar</button>
+            </form>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Imagem do carro</th>
+                        <th>Marca / Modelo</th>
+                        <th>Ano</th>
+                        <th>Placa</th>
+                        <th>Cor</th>
+                    </tr>
+                </thead>
+                <tbody data-wrapper-list="cars">
+                </tbody>
+            </table>
+        </main>
+
+        <footer class="app-footer">
+            <p> &copy <span data-company="name"></span> - all reserved direct</p>
+            <p><span data-company="phone"></span></p>
+        </footer>
+    </div>
+
+    <!-- scripts -->
+    <script src="./assets/js/dom.js"></script>
+    <script src="./assets/js/main.js"></script>
+</body>
+</html>

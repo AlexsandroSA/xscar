@@ -1,0 +1,93 @@
+/* GLOBAL */
+*, *:before, *:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html, body {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    font-family: 'IBM Plex Sans Condensed', sans-serif;
+}
+
+/* APP */
+.app {}
+
+.app-header {
+    background-color: #ccc;
+    padding: 0 10px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.app-brand {
+    font-size: 1.5em;
+}
+
+.app-phone {
+    font-size: .8em;
+}
+
+.app-content {
+    margin-top: 50px;
+}
+
+.app-footer {
+    position: absolute;
+    bottom: .5em;
+    width: 100%;
+    text-align: center;
+    font-size: .8em;
+}
+
+.app-footer p {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+/* GENERIC */
+.form,
+.table {
+    width: 80%;
+    margin: 0 auto;
+}
+
+/* FORM */
+.form {
+    margin-bottom: 50px;
+}
+
+.form div {
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: 5px;
+}
+
+.form div label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 2.5px;
+}
+
+/* TABLE */
+.table thead th,
+.table thead td {
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+}
+
+.table tr td img {
+    width: 100px;
+}
+
+.table tbody tr td,
+.table tr td {
+    padding: 5px 0;
+    text-transform: uppercase;
+    border-bottom: 1px solid #ccc;
+}
