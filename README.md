@@ -1,2 +1,3 @@
-# xscar
-Projeto do curso Javascript Ninja
+# :car: XSCar
+
+Projeto final do curso Javascript Ninja
