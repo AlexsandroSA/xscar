@@ -38,9 +38,7 @@ body {
 }
 
 .app-footer {
-    position: absolute;
-    bottom: .5em;
-    width: 100%;
+    margin-top: 100px;
     text-align: center;
     font-size: .8em;
 }

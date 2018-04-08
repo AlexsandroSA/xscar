@@ -2,19 +2,34 @@
     'use strict';
 
     // Variables
+    var $body = doc.querySelector('body');
+    var fn = {};
     var ObjectType = {
-        NULL: '[object Null]',
-        ARRAY: '[object Array]',
-        NUMBER: '[object Number]',
-        OBJECT: '[object Object]',
-        STRING: '[object String]',
-        BOLLEAN: '[object Boolean]',
-        FUNCTION: '[object Function]',
-        UNDEFINED: '[object Undefined]'
+      NULL: '[object Null]',
+      ARRAY: '[object Array]',
+      NUMBER: '[object Number]',
+      OBJECT: '[object Object]',
+      STRING: '[object String]',
+      BOLLEAN: '[object Boolean]',
+      FUNCTION: '[object Function]',
+      UNDEFINED: '[object Undefined]'
     };
 
-    function getType( obj ) {
-      return Object.prototype.toString.call( obj );
+    // polyfill
+    // Element.matches() polyfill
+    if (!Element.prototype.matches) {
+      Element.prototype.matches =
+        Element.prototype.matchesSelector ||
+        Element.prototype.mozMatchesSelector ||
+        Element.prototype.msMatchesSelector ||
+        Element.prototype.oMatchesSelector ||
+        Element.prototype.webkitMatchesSelector ||
+        function(s) {
+          var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+            i = matches.length;
+          while (--i >= 0 && matches.item(i) !== this) {}
+          return i > -1;
+        };
     }
 
     function DOM( element ) {
@@ -22,14 +37,54 @@
         return new DOM(element);
       }
 
-      this.element = doc.querySelectorAll( element );
-      return this;
+      this.element = has(element) ? getAll(element) : element;
+    }
+
+    function has( element ) {
+      return getAll( element ).length > 0;
+    }
+
+    function getAll( element ) {
+      return doc.querySelectorAll( element );
+    }
+
+    function addDynamicEventListener( elementName, eventName, callback ) {
+      var attr = elementName;
+
+      $body.addEventListener(eventName, function(event) {
+        var $element = event.target;
+
+        if ( isMatcheElement( $element, attr ) ) {
+          registerFunction( attr, callback );
+          callFunction( attr, event );
+        }
+
+      }, false);
+    }
+
+    function isMatcheElement( element, attribute ) {
+      return element.matches( attribute );
+    }
+
+    function registerFunction( name, func ) {
+      if( !fn[name] ) {
+          fn[name] = func;
+      }
+    }
+
+    function callFunction( name, event )  {
+      fn[name]( event );
     }
 
     DOM.prototype.on = function on( event, callback ) {
-        this.element.forEach(function( elem ){
-            elem.addEventListener( event, callback, false );
-        });
+      if( DOM.isString( this.element )  ) {
+        addDynamicEventListener( this.element, event, callback );
+        return;
+      }
+
+      this.element.forEach(function( elem ){
+        elem.addEventListener( event, callback, false );
+      });
     }
 
     DOM.prototype.off = function off( event, callback ) {
@@ -44,6 +99,15 @@
       }
 
       return this.element[0];
+    }
+
+    DOM.getParent = function getParent( elem, selector ) {
+
+      for ( ; elem && elem !== document; elem = elem.parentNode ) {
+        if ( elem.matches( selector ) ) return elem;
+      }
+
+      return null;
     }
 
     DOM.prototype.forEach = function forEach() {
@@ -105,6 +169,10 @@
     DOM.isNull = function isNull( obj ) {
       var type = getType( obj );
       return type === ObjectType.NULL || type === ObjectType.UNDEFINED;
+    }
+
+    function getType( obj ) {
+      return Object.prototype.toString.call( obj );
     }
 
     // Publc Api
