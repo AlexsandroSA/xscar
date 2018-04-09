@@ -3,8 +3,6 @@
   'use strict';
 
   // Variables
-  var ajax = new XMLHttpRequest();
-
   var Element = {
     FORM: $('[data-form="add-car"]'),
     BUTTON_REMOVE_CAR: $('[data-action="remove-car"]'),
@@ -32,8 +30,23 @@
     var $form = event.target;
     var data = getFormData( $form );
 
-    showNewCar( data );
-    resetForm( $form );
+    requestSaveCar( data );
+    cleanForm( $form );
+  }
+
+  function requestSaveCar( data ) {
+    var params;
+    var ajax = new XMLHttpRequest();
+    ajax.open('POST', 'http://localhost:3000/car');
+    ajax.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    ajax.send( data[0] );
+
+    ajax.onreadystatechange = function() {
+      if( isRequestSuccess( ajax ) ) {
+        console.log( ajax.responseText );
+        showCars( data );
+      }
+    };
   }
 
   function getFormData( $form ) {
@@ -41,7 +54,7 @@
     var contract = {
       year: 'year',
       image: 'image',
-      brand: 'brand',
+      brand: 'brandModel',
       plate: 'plate',
       color: 'color'
     };
@@ -56,33 +69,52 @@
       }
     });
 
-    return data;
+    return [ data ];
   }
 
-  function showNewCar( data ) {
+  function showCars( data ) {
     var $template = getTemplateCar( data );
     Element.WRAPPER_LIST_CARD.insertAdjacentHTML( 'beforeend', $template );
   }
 
   function getTemplateCar( data ) {
     var $template = '';
-    $template += '<tr>';
-      $template += '<td> <img src="' + data.image + '" /></td>';
-      $template += '<td> ' + data.brand + ' </td>';
-      $template += '<td> ' + data.year + ' </td>';
-      $template += '<td> ' + data.plate + ' </td>';
-      $template += '<td> ' + data.color + ' </td>';
-      $template += '<td> <button data-action="remove-car">Remover</button> </td>';
-    $template += '</tr>';
+
+    data.forEach(function( car ) {
+      $template += '<tr>';
+        $template += '<td> <img src="' + car.image + '" /></td>';
+        $template += '<td> ' + car.brandModel + ' </td>';
+        $template += '<td> ' + car.year + ' </td>';
+        $template += '<td> ' + car.plate + ' </td>';
+        $template += '<td> ' + car.color + ' </td>';
+        $template += '<td> <button data-action="remove-car">Remover</button> </td>';
+      $template += '</tr>';
+    });
+
     return $template;
   }
 
-  function resetForm( $form ) {
+  function cleanForm( $form ) {
     $form.reset();
   }
 
   function init() {
     requestCompanyInfo();
+    requestCars();
+  }
+
+  function requestCars( data ) {
+    var ajax = new XMLHttpRequest();
+    ajax.open('GET', 'http://localhost:3000/car');
+    ajax.send();
+
+    ajax.addEventListener('readystatechange' , function() {
+      if ( isRequestSuccess(ajax) ) {
+        var data = JSON.parse( ajax.responseText );
+        showCars( data );
+      }
+    }, false);
+
   }
 
   function showCompanyInfo() {
@@ -102,19 +134,19 @@
   }
 
   function requestCompanyInfo() {
-    ajax.open('GET', '/assets/data/company.json', true);
+    var ajax = new XMLHttpRequest();
+    ajax.open('GET', '/assets/data/company.json');
     ajax.send();
-    ajax.addEventListener('readystatechange' , readyStateChange, false);
+
+    ajax.addEventListener('readystatechange' , function(){
+      if( isRequestSuccess(ajax) ) {
+        saveCacheCompany( ajax.responseText );
+        showCompanyInfo();
+      }
+    }, false);
   }
 
-  function readyStateChange() {
-    if ( isRequestSuccess() ) {
-      saveCacheCompany( ajax.responseText );
-      showCompanyInfo();
-    }
-  }
-
-  function isRequestSuccess() {
+  function isRequestSuccess( ajax ) {
     return ajax.readyState === 4 && ajax.status === 200;
   }
 
