@@ -3,6 +3,7 @@
   'use strict';
 
   // Variables
+  var API = 'http://localhost:3000/car';
   var Element = {
     FORM: $('[data-form="add-car"]'),
     BUTTON_REMOVE_CAR: $('[data-action="remove-car"]'),
@@ -22,7 +23,24 @@
     var $button = event.target;
     var $row = $.getParent( $button ,'tr' );
 
-    $row.remove();
+    requestRemoveCar( $row );
+  }
+
+  function requestRemoveCar( $item ) {
+    var plate = getPlateByElement( $item );
+    var params = 'plate=' +  encodeURIComponent(plate);
+    var ajax = new XMLHttpRequest();
+    ajax.open('DELETE', API);
+    ajax.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    ajax.send( params );
+
+    ajax.onreadystatechange = function() {
+      $item.remove();
+    }
+  }
+
+  function getPlateByElement( $item ) {
+    return $item.dataset.carPlate;
   }
 
   function addCar( event ) {
@@ -35,18 +53,29 @@
   }
 
   function requestSaveCar( data ) {
-    var params;
+    var params = formatArrayToUrl( data );
     var ajax = new XMLHttpRequest();
-    ajax.open('POST', 'http://localhost:3000/car');
+    ajax.open('POST', API);
     ajax.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    ajax.send( data[0] );
+    ajax.send( params );
 
     ajax.onreadystatechange = function() {
       if( isRequestSuccess( ajax ) ) {
-        console.log( ajax.responseText );
         showCars( data );
       }
     };
+  }
+
+  function formatArrayToUrl( data ) {
+    var params = '';
+
+    data.forEach(function(obj) {
+      for(var prop in obj) {
+        params += prop + '=' + encodeURIComponent(obj[prop]) + '&';
+      }
+    })
+
+    return params.slice(0, -1);
   }
 
   function getFormData( $form ) {
@@ -81,7 +110,7 @@
     var $template = '';
 
     data.forEach(function( car ) {
-      $template += '<tr>';
+      $template += '<tr data-car-plate="'+ car.plate +'">';
         $template += '<td> <img src="' + car.image + '" /></td>';
         $template += '<td> ' + car.brandModel + ' </td>';
         $template += '<td> ' + car.year + ' </td>';
@@ -105,7 +134,7 @@
 
   function requestCars( data ) {
     var ajax = new XMLHttpRequest();
-    ajax.open('GET', 'http://localhost:3000/car');
+    ajax.open('GET', API);
     ajax.send();
 
     ajax.addEventListener('readystatechange' , function() {
