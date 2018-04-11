@@ -1,0 +1,27 @@
+{
+  "name": "xscar",
+  "version": "1.0.0",
+  "description": "A simples ShopCar with javascript",
+  "main": "dist/main.js",
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint src/**/*.js"
+  },
+  "dependencies": {
+    "eslint": "^4.19.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/lyef/lyef-react-component.git"
+  },
+  "keywords": [
+    "js",
+    "shopcar",
+    "javascript"
+  ],
+  "author": "Alexsandro Silva Alves (https://github.com/AlexsandroSA)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AlexsandroSA/xscar/issues"
+  },
+  "homepage": "https://github.com/AlexsandroSA/xscar#README"
+}
